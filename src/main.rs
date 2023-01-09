@@ -71,7 +71,10 @@ fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->
         // Update to the header
         let header:&str = str::from_utf8(&c_record.head).unwrap();
         //check if heder contains "/"
-        let headerpresplit:Vec<&str>= header.split(" ").collect();
+        let headerpresplit:Vec<&str>= header.split("\t").collect();
+        //remove
+        println!("{:?}",&headerpresplit);
+        /*
         if ! headerpresplit[0].contains("/"){
             //Return error
             eprint!("Read header does not contain `/`");
@@ -80,13 +83,19 @@ fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->
              //return(Err(std::io::Error::new(io::ErrorKind::InvalidInput,"Read Header does not contain `/` in readname"))) 
         }
         let headersplit:Vec<&str> = header.split("/").collect();
+        */
         //let headersplit:Vec<&str> = str::from_utf8(&c_record.head).unwrap().split("/").collect();
         // if / is not in h
         let mut newheader=String::new();
-        newheader.push_str(headersplit[0]);
-        newheader.push_str(":0:0:0:0:0:0 ");
-        newheader.push_str(headersplit[1]);
-        newheader.push_str(":N:0:1");
+        newheader.push_str(headerpresplit[0]);
+        newheader.push_str(" ");
+        match pair {
+            "R1" => newheader.push_str("1"),
+            "R2" => newheader.push_str("2"),
+            _ => {},
+        }
+        newheader.push_str(":N:0:");
+        newheader.push_str("1");//add from bcz field
         c_record.head=newheader.as_bytes().to_vec();
         // write to the output buffer
         match c_record.write(&mut out_buf){
