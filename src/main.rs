@@ -114,12 +114,17 @@ fn main() {
         .about("Converts the readname format to illumina readname formatting")
         .arg_required_else_help(true)
         .arg(
-            arg!( -f --fastq <FILE> "Fastq files fastq.gz"
-                )
+            arg!( -f --fastq <FILE> "Fastq files fastq.gz")
             .takes_value(true)
-            .multiple(true)
+            .multiple(false)
             .hide_short_help(false)
             .value_parser(value_parser!(PathBuf)),
+            )
+        .arg(
+            arg!(-p --pair <MODE> "Read pair for fastq files")
+            .takes_value(true)
+            .hide_short_help(false)
+            .value_parser(["R1","R2"]),
             )
         .get_matches();
     // use with getraw and convert into iter

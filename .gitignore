@@ -1,2 +1,4 @@
 sample_forJSI
 test_run
+target
+Cargo.lock
