@@ -38,7 +38,8 @@ fn check_inputfiles(inputfilename:&PathBuf)->Result<PathBuf,io::Error>{
     Ok(outputbuffer)
     
 }
-fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ) ->Result<(),io::Error>{
+fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->Result<(),io::Error>{
+    println!("{:?}",pair);
     // Input values:
     /*/
     // While using gzip decoder from flate2 
@@ -137,10 +138,16 @@ fn main() {
             // Check fastq file and return proper error!
             match check_inputfiles(&PathBuf::from(fq)){
                 Ok(outputbuffer) =>{
-                                match convert_fastq(&PathBuf::from(fq),&outputbuffer) {
+                    // Get pair
+                    match matches.get_one::<String>("pair"){
+                        Some(pair) => {
+                                match convert_fastq(&PathBuf::from(fq),&outputbuffer,pair) {
                                     Ok(_) =>{},
                                     Err(e) => {eprintln!("Error during conversion of file {:?} with error: {}",fq,e)},
-                                    }
+                                    } // match convert_fastq
+                                        },
+                        _ =>println!("pair info not provided!"),
+                    }
                             },
                 Err(e)=> eprintln!("Failed to parse file:{:?} with error: {}",fq,e),
                 }
