@@ -39,7 +39,6 @@ fn check_inputfiles(inputfilename:&PathBuf)->Result<PathBuf,io::Error>{
     
 }
 fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->Result<(),io::Error>{
-    println!("{:?}",pair);
     // Input values:
     /*/
     // While using gzip decoder from flate2 
@@ -74,29 +73,51 @@ fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->
         let headerpresplit:Vec<&str>= header.split("\t").collect();
         //remove
         println!("{:?}",&headerpresplit);
-        /*
-        if ! headerpresplit[0].contains("/"){
-            //Return error
-            eprint!("Read header does not contain `/`");
-            readcount=0; // nullify the reads
-            return false
-             //return(Err(std::io::Error::new(io::ErrorKind::InvalidInput,"Read Header does not contain `/` in readname"))) 
+        // Assign Barcode, MBC Seqs and MBC Qualities.
+        let mut BCZ=String::new();
+        let mut RXZ=String::new();
+        let mut QXZ =String::new();
+        for comment in &headerpresplit{
+            if comment.starts_with("BC:Z:"){ BCZ.push_str(comment); }
+            if comment.starts_with("RX:Z:"){ RXZ.push_str(comment); }
+            if comment.starts_with("QX:Z:"){ QXZ.push_str(comment); }
         }
-        let headersplit:Vec<&str> = header.split("/").collect();
-        */
-        //let headersplit:Vec<&str> = str::from_utf8(&c_record.head).unwrap().split("/").collect();
-        // if / is not in h
+        //println!("{} {} {}",BCZ,RXZ,QXZ);
+        // update header
         let mut newheader=String::new();
         newheader.push_str(headerpresplit[0]);
         newheader.push_str(" ");
         match pair {
             "R1" => newheader.push_str("1"),
             "R2" => newheader.push_str("2"),
-            _ => {},
+            _ => { /* Unreachable */ },
         }
         newheader.push_str(":N:0:");
-        newheader.push_str("1");//add from bcz field
+        newheader.push_str(&BCZ[5..]);//add from bcz field
+        //update sequence and Qualities
+        let mut newSequences=String::new();
+        let mut newQualities=String::new();
+        match pair {
+            "R1" => {
+                newSequences.push_str(&RXZ[5..8]);
+                newQualities.push_str(&QXZ[5..8]);
+                },
+            "R2" => {
+                newSequences.push_str(&RXZ[9..12]);
+                newQualities.push_str(&QXZ[9..12]);
+                },
+            _ => {/* Unreachable */},
+        }
+        // Push Record Sequence and quality to newSeq and newQual
+        newSequences.push_str(str::from_utf8(&c_record.seq).unwrap());
+        newQualities.push_str(str::from_utf8(&c_record.qual).unwrap());
+
+        //println!("New Seq {} \nNeq Qual {}",newSequences,newQualities);
+
+        //update the record fields with new values
         c_record.head=newheader.as_bytes().to_vec();
+        c_record.seq=newSequences.as_bytes().to_vec();
+        c_record.qual=newQualities.as_bytes().to_vec();
         // write to the output buffer
         match c_record.write(&mut out_buf){
             Ok(_) => true,// if writes success fully continue parsing
