@@ -71,8 +71,6 @@ fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->
         let header:&str = str::from_utf8(&c_record.head).unwrap();
         //check if heder contains "/"
         let headerpresplit:Vec<&str>= header.split("\t").collect();
-        //remove
-        println!("{:?}",&headerpresplit);
         // Assign Barcode, MBC Seqs and MBC Qualities.
         let mut BCZ=String::new();
         let mut RXZ=String::new();
