@@ -139,10 +139,10 @@ fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->
 }
 fn main() {
     // Parse cli arguments with clap
-    let matches= Command::new("mgi_fastq_converter")
+    let matches= Command::new("Agent2JSI_converter")
         .version("1.0")
         .author("Ibrahim K. <kisakesenhi@gmail.com>")
-        .about("Converts the readname format to illumina readname formatting")
+        .about("Prepends the MBC sequences and qualities to trimmed FAST files by Agent Trimmer, new file without Dark bases could be used in JSI software.")
         .arg_required_else_help(true)
         .arg(
             arg!( -f --fastq <FILE> "Fastq files fastq.gz")
