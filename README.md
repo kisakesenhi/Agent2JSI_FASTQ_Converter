@@ -9,14 +9,16 @@ This tool takes reads the comments from the header and rebuilds the UMI+Read str
 The JSI Sequence Pilot user interface lets you to identify only UMI as 5' or 3'. So the new files should be ready to be used in JSI.
 
 
-USAGE:
-    Agent2JSI_converter[.exe] --fastq <FILE> --pair <MODE>
+    USAGE:
 
-OPTIONS:
-    -f, --fastq <FILE>    Fastq files fastq.gz
-    -h, --help            Print help information
-    -p, --pair <MODE>     Read pair for fastq files [possible values: R1, R2]
-    -V, --version         Print version information
+       Agent2JSI_converter[.exe] --fastq <FILE> --pair <MODE>
+
+    OPTIONS:
+
+       -f, --fastq <FILE>    Fastq files fastq.gz
+       -h, --help            Print help information
+       -p, --pair <MODE>     Read pair for fastq files [possible values: R1, R2]
+       -V, --version         Print version information
 
 ### GNU GPL v3
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    
