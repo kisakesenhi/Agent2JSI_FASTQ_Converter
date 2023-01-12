@@ -146,7 +146,7 @@ fn main() {
     let matches= Command::new("Agent2JSI_converter")
         .version("1.0")
         .author("Ibrahim K. <kisakesenhi@gmail.com>")
-        .about("Prepends the MBC sequences and qualities to trimmed FAST files by Agent Trimmer, new file without Dark bases could be used in JSI software.")
+        .about("Prepends the MBC sequences and qualities to trimmed FASTQ files by Agent Trimmer, new file without Dark bases could be used in JSI software.")
         .arg_required_else_help(true)
         .arg(
             arg!( -f --fastq <FILE> "Fastq files fastq.gz")
