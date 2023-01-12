@@ -1,6 +1,9 @@
 //use flate2::read::GzDecoder; // flate2 bug on concatated files while decomression, commented!
+/*
 use rust_htslib::bgzf::Reader; // omit flate to once success full
+*/
 use flate2::write::GzEncoder;
+use flate2::read::MultiGzDecoder;
 use flate2::Compression;
 use std::io;
 use std::io::prelude::*;
@@ -12,7 +15,7 @@ use std::path::PathBuf;
 use clap::{arg, command, value_parser, ArgAction, Command};
 
 // Capacity 
-// const CAPACITY: usize = 10240; // will be used on flate2::GzDecoder,commented now!
+const CAPACITY: usize = 10240; // will be used on flate2::GzDecoder,commented now!
 fn check_inputfiles(inputfilename:&PathBuf)->Result<PathBuf,io::Error>{
     //check if path exists
     if ! inputfilename.exists() { return(Err(std::io::Error::new(io::ErrorKind::NotFound,"File not found")))  }
@@ -40,14 +43,16 @@ fn check_inputfiles(inputfilename:&PathBuf)->Result<PathBuf,io::Error>{
 }
 fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->Result<(),io::Error>{
     // Input values:
-    /*/
+    /**/
     // While using gzip decoder from flate2 
-    let in_filename = "input.fastq.gz";
-    let in_fh = std::fs::File::open(in_filename).unwrap();
-    let in_gz = GzDecoder::new(in_fh);
+    //let in_filename = "input.fastq.gz";
+    let in_fh = std::fs::File::open(inputfilename).unwrap();
+    let in_gz = MultiGzDecoder::new(in_fh);
     let in_buf = io::BufReader::with_capacity(CAPACITY, in_gz);
-    */
+    /*
+    // While using rust_htslib
     let in_buf:Reader ;
+    // * /
     match Reader::from_path(inputfilename){
         Ok(buf) => in_buf = buf,
         Err(e) => {
@@ -55,6 +60,7 @@ fn convert_fastq(inputfilename:&PathBuf , outputfilename:&PathBuf ,pair:&str) ->
             return Err(std::io::Error::new(io::ErrorKind::InvalidInput,format!("{:?}",e)))
         },
     }
+    */
     //Output values
     //let out_filename = "output.fastq.gz";
     let out_fh = std::fs::File::create(outputfilename)?;
