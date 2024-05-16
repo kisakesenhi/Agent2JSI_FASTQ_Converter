@@ -2,7 +2,7 @@
 
 A command line tool to convert Agilent Agent Trimmed FAST files compatible for JSI input to use MBC.
 
-Agilent dual MBC reads contain MBC and 1-2 dark bases in between the insert and UMI. The Agent Trimmer Tool from Agilent Technologies, trims the MBS and dark bases from 5' of R1 and R2. By default it add those infromation as comment to the read header in fastq files.
+Agilent dual MBC reads contain MBC and 1-2 dark bases in between the insert and UMI. The Agent Trimmer Tool from Agilent Technologies, trims the MBC and dark bases from 5' of R1 and R2. By default it add those infromation as comment to the read header in fastq files.
 
 This tool takes reads the comments from the header and rebuilds the UMI+Read structure without the dark bases.
 
